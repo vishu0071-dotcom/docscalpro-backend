@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://docscalpro:password@db:5432/docscalpro
+      - JWT_SECRET=change-this-to-a-secure-64-char-random-string
+      - RAZORPAY_KEY_ID=rzp_live_XXXXXXXXXX
+      - RAZORPAY_KEY_SECRET=your_secret_here
+      - ADMIN_SETUP_SECRET=your-admin-setup-secret
+    depends_on:
+      - db
+    restart: unless-stopped
+    volumes:
+      - /tmp/docscalpro:/tmp/docscalpro
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=docscalpro
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=docscalpro
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
